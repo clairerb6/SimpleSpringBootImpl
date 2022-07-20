@@ -12,6 +12,8 @@ public interface UsersService {
     List < Users > getAllUsers();
 
     Users getUserById(long userId);
+    
+    Users getUserByEmail(Users user);
 
     void deleteUser(long id);
 }
