@@ -6,7 +6,9 @@ This repository was created to validate the necessary skills for the creation of
 # Postman collection
 
 All detailed information is inside the postman collection
+
 [link](https://documenter.getpostman.com/view/20957797/UzR1JMTN)
+
 For testing services java application must be run under http://localhost:8080
 
 ## Passwords security
@@ -29,7 +31,8 @@ Since it is a basic project, if a field is omitted when updating, it will be lef
 Phones are updated or inserted depending on whether the id exists within the request body, to avoid user insertion errors.
 
 ## Table structure
-|    Users   |          |
+
+|  **Users** |          |
 |------------|--------------|
 | field name |   type       |
 | id         | long(PK)     |
@@ -43,9 +46,20 @@ Phones are updated or inserted depending on whether the id exists within the req
 | token      | String       |
 | active     | boolean      | 
 
-|Phones||
-|---------|-|
-|id | long(PK)|
-|number | long|
-|citycode | int|
-|countrycode | int|
+| **Phones**  |          |
+|-------------|----------|
+| id          | long(PK) |
+| number      | long     |
+| citycode    | int      |
+| countrycode | int      |
+
+
+## UML diagrams
+All the request are processed in the same route
+```mermaid
+sequenceDiagram
+Postman ->> Java: body request for processing
+Java ->> Database: after processing the request it is persisted in db
+Database ->> Java: return id of object inserted
+Java ->> Postman: show response
+```
