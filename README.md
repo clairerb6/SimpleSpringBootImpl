@@ -2,6 +2,9 @@
 
 This repository was created to validate the necessary skills for the creation of rest services in the new **BCI bank** project.
 
+## Deployment
+
+For run application you must mount all code into eclipse IDE, and generate jar file through export menu or just run hitting `ctrl+F11`  
 
 # Postman collection
 
@@ -25,7 +28,7 @@ The security of stored passwords is given only by the strength of the password. 
 ## About duplicate emails
 It is not allowed to register an email more than once. Not completing this field or sending an invalid email will not allow its registration
 
-## Considerations when upgrading
+## Considerations when updating data
 
 Since it is a basic project, if a field is omitted when updating, it will be left null in the database, so all fields must be sent if possible. The only one that can be omitted is the password
 Phones are updated or inserted depending on whether the id exists within the request body, to avoid user insertion errors.
