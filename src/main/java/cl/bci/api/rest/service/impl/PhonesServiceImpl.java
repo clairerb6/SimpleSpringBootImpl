@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cl.bci.api.rest.exception.ResourceNotFoundException;
 import cl.bci.api.rest.model.Phones;
+import cl.bci.api.rest.model.dto.PhonesDto;
 import cl.bci.api.rest.repository.PhonesRepository;
 import cl.bci.api.rest.service.PhonesService;
 
@@ -20,24 +21,28 @@ public class PhonesServiceImpl implements PhonesService {
 	private PhonesRepository phonesRepository;
 
 	@Override
-	public Phones createPhone(Phones phone) {
+	public Phones createPhone(PhonesDto dto) {
+		Phones phone = new Phones();
+		phone.setCountrycode(dto.getCountrycode());
+		phone.setCitycode(dto.getCitycode());
+		phone.setNumber(dto.getNumber());
 		return phonesRepository.save(phone);
 	}
 
 	@Override
-	public Phones updatePhone(Phones phone) {
-        Optional < Phones > phonesDb = this.phonesRepository.findById(phone.getId());
+	public Phones updatePhone(PhonesDto dto, long id) {
+        Optional < Phones > phonesDb = this.phonesRepository.findById(id);
 
         if (phonesDb.isPresent()) {
         	Phones phoneUpdate = phonesDb.get();
-        	phoneUpdate.setId(phone.getId());
-        	phoneUpdate.setNumber(phone.getNumber());
-        	phoneUpdate.setCitycode(phone.getCitycode());
-        	phoneUpdate.setCountrycode(phone.getCountrycode());
+        	phoneUpdate.setId(dto.getId());
+        	phoneUpdate.setNumber(dto.getNumber());
+        	phoneUpdate.setCitycode(dto.getCitycode());
+        	phoneUpdate.setCountrycode(dto.getCountrycode());
         	phonesRepository.save(phoneUpdate);
             return phoneUpdate;
         } else {
-            throw new ResourceNotFoundException("Record not found with id : " + phone.getId());
+            throw new ResourceNotFoundException("Record not found with id : " + id);
         }
 	}
 

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.bci.api.rest.model.Phones;
 import cl.bci.api.rest.model.Users;
+import cl.bci.api.rest.model.dto.PhonesDto;
+import cl.bci.api.rest.model.dto.UsersDto;
 import cl.bci.api.rest.service.PhonesService;
 import cl.bci.api.rest.service.UsersService;
 
@@ -43,14 +45,13 @@ public class UsersController {
     }
 
     @PostMapping("/phones")
-    public ResponseEntity < Phones > createPhones(@RequestBody Phones phone) {
+    public ResponseEntity < Phones > createPhones(@RequestBody PhonesDto phone) {
         return ResponseEntity.ok().body(this.phonesService.createPhone(phone));
     }
 
     @PutMapping("/phones/{id}")
-    public ResponseEntity < Phones > updatePhones(@PathVariable long id, @RequestBody Phones phone) {
-    	phone.setId(id);
-        return ResponseEntity.ok().body(this.phonesService.updatePhone(phone));
+    public ResponseEntity < Phones > updatePhones(@PathVariable long id, @RequestBody PhonesDto phone) {
+        return ResponseEntity.ok().body(this.phonesService.updatePhone(phone, id));
     }
     
     @DeleteMapping("/phones/{id}")
@@ -74,14 +75,13 @@ public class UsersController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity < Users > createUser(@RequestBody Users user) {
+    public ResponseEntity < Users > createUser(@RequestBody UsersDto user) {
         return ResponseEntity.ok().body(this.usersService.createUser(user));
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity < Users > updateUser(@PathVariable long id, @RequestBody Users user) {
-    	user.setId(id);
-        return ResponseEntity.ok().body(this.usersService.updateUser(user));
+    public ResponseEntity < Users > updateUser(@PathVariable long id, @RequestBody UsersDto user) {
+        return ResponseEntity.ok().body(this.usersService.updateUser(user, id));
     }
     
     @DeleteMapping("/users/{id}")

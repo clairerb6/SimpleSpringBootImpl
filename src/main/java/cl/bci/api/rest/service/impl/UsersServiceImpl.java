@@ -18,6 +18,8 @@ import cl.bci.api.rest.exception.DuplicatedResourceException;
 import cl.bci.api.rest.exception.ResourceNotFoundException;
 import cl.bci.api.rest.model.Phones;
 import cl.bci.api.rest.model.Users;
+import cl.bci.api.rest.model.dto.PhonesDto;
+import cl.bci.api.rest.model.dto.UsersDto;
 import cl.bci.api.rest.repository.UsersRepository;
 import cl.bci.api.rest.service.PhonesService;
 import cl.bci.api.rest.service.UsersService;
@@ -34,29 +36,34 @@ public class UsersServiceImpl implements UsersService {
 	private PhonesService phonesService;
 	
 	@Override
-	public Users createUser(Users user) {
-		if(!General.passwordPattern.matcher(user.getPassword()).matches()) {
+	public Users createUser(UsersDto dto) {
+		if(!General.passwordPattern.matcher(dto.getPassword()).matches()) {
 			throw new DuplicatedResourceException("The password does not meet the requirements");
 		}
-		if(!Objects.isNull(this.getUserByEmail(user))) {
-			throw new DuplicatedResourceException("There's another user with email : " + user.getEmail().toLowerCase());
+		if(!Objects.isNull(this.getUserByEmail(dto))) {
+			throw new DuplicatedResourceException("There's another user with email : " + dto.getEmail().toLowerCase());
 		}
-		if(!General.emailPattern.matcher(user.getEmail()).matches()) {
-			throw new DuplicatedResourceException("Email does not meet the required criteria : " + user.getEmail().toLowerCase());
+		if(!General.emailPattern.matcher(dto.getEmail()).matches()) {
+			throw new DuplicatedResourceException("Email does not meet the required criteria : " + dto.getEmail().toLowerCase());
 		}
+		Users user = new Users();
+		user.setName(dto.getName());
+		user.setEmail(dto.getEmail());
+		user.setPassword(dto.getPassword());
+		
 		Date d = Calendar.getInstance().getTime();
 		user.setCreated(d);
 		user.setModified(d);
-		user.setToken(Base64.getEncoder().encodeToString(user.getPassword().getBytes()));
+		user.setToken(Base64.getEncoder().encodeToString(dto.getPassword().getBytes()));
 		user.setActive(true);
-		List<Phones> insertedPhones = this.validatePhonesForInsert(user);
+		List<Phones> insertedPhones = this.validatePhonesForInsert(dto);
 		user.setPhones(insertedPhones);
 		return usersRepository.save(user);
 	}
 
 	@Override
-	public Users updateUser(Users user) {
-        Optional < Users > usersDb = this.usersRepository.findById(user.getId());
+	public Users updateUser(UsersDto user, long id) {
+        Optional < Users > usersDb = this.usersRepository.findById(id);
 
         if (usersDb.isPresent()) {
         	Users userUpdate = usersDb.get();
@@ -118,21 +125,21 @@ public class UsersServiceImpl implements UsersService {
         }
 	}
 	
-	private List<Phones> validatePhonesForInsert(Users user) {
-		List<Phones> phones = user.getPhones();
+	private List<Phones> validatePhonesForInsert(UsersDto dto) {
+		List<PhonesDto> phones = dto.getPhones();
 		List<Phones> insertedPhones = new ArrayList<Phones>();
-		for (Phones phone : phones) {
+		for (PhonesDto phone : phones) {
 			if(Objects.isNull(phone.getId()) || phone.getId()==0) {
 				insertedPhones.add(this.phonesService.createPhone(phone));
 			} else {
-				insertedPhones.add(this.phonesService.updatePhone(phone));
+				insertedPhones.add(this.phonesService.updatePhone(phone, phone.getId()));
 			}
 		}
 		return insertedPhones;
 	}
 
 	@Override
-	public Users getUserByEmail(Users user) {
+	public Users getUserByEmail(UsersDto user) {
 		Users userForSearch = new Users();
 		userForSearch.setEmail(user.getEmail());
 		Optional<Users> userDb = this.usersRepository.findOne(

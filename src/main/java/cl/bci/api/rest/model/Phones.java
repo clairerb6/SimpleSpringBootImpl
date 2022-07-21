@@ -7,7 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "phones")
 public class Phones {
     @Id
@@ -22,36 +27,4 @@ public class Phones {
     
     @Column(name = "countrycode")
     private int countrycode;
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public long getNumber() {
-		return number;
-	}
-
-	public void setNumber(long number) {
-		this.number = number;
-	}
-
-	public int getCitycode() {
-		return citycode;
-	}
-
-	public void setCitycode(int citycode) {
-		this.citycode = citycode;
-	}
-
-	public int getCountrycode() {
-		return countrycode;
-	}
-
-	public void setCountrycode(int countrycode) {
-		this.countrycode = countrycode;
-	}
 }
