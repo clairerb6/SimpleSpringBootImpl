@@ -31,35 +31,53 @@ Since it is a basic project, if a field is omitted when updating, it will be lef
 Phones are updated or inserted depending on whether the id exists within the request body, to avoid user insertion errors.
 
 ## Table structure
+### Class Diagram
+```mermaid
+erDiagram
+Users ||--o{ Phones : Contains
+Users {
+    long id PK "id identifier"
+    String name
+    String email
+    String password
+    List Phones FK "phones"
+    Date created
+    Date modified
+    Date lastLogin
+    String token
+    boolean active
+}
+Phones {
+    long id PK "id identifier"
+    long number
+    int citycode
+    int countrycode
+}
 
-|  **Users** |          |
-|------------|--------------|
-| field name |   type       |
-| id         | long(PK)     |
-| name       | String       |
-| email      | String       |
-| password   | String       |
-| phones     | List<Phones> |
-| created    | Date         |
-| modified   | Date         |
-| lastLogin  | Date         |
-| token      | String       |
-| active     | boolean      | 
+```
 
-| **Phones**  |          |
-|-------------|----------|
-| id          | long(PK) |
-| number      | long     |
-| citycode    | int      |
-| countrycode | int      |
-
-
-## UML diagrams
 All the request are processed in the same route
+## UML diagrams
 ```mermaid
 sequenceDiagram
 Postman ->> Java: body request for processing
 Java ->> Database: after processing the request it is persisted in db
 Database ->> Java: return id of object inserted
 Java ->> Postman: show response
+```
+## State Diagram
+```mermaid
+stateDiagram-v2
+s1: "Postman or client make a request"
+s2: "Java process the response and send to databse"
+s3: "Database store or respond to java, depend on call"
+s4: "Java transform the response to json"
+s5: "Postman show the response to client"
+[*]-->s1
+s1-->s2
+s2-->s3
+s3-->s4
+s4-->s5
+s5-->[*]
+s5-->s1
 ```
